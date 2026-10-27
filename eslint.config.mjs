@@ -2,6 +2,7 @@
 // Google TypeScript Style (gts) + ajustements NestJS.
 import {createRequire} from 'node:module';
 import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
 const require = createRequire(import.meta.url);
 const gts = require('gts/build/eslint.config.js');
@@ -17,6 +18,10 @@ export default [
   },
   ...gts,
   {
+    files: ['**/*.ts'],
+    plugins: {
+      '@typescript-eslint': tseslint.plugin,
+    },
     languageOptions: {
       globals: {...globals.node, ...globals.jest},
       parserOptions: {
@@ -25,12 +30,13 @@ export default [
       },
     },
     rules: {
-      // NestJS: décorateurs & DI ne « lisent » pas les paramètres au sens ESLint.
       '@typescript-eslint/no-unused-vars': [
         'error',
-        {argsIgnorePattern: '^_', varsIgnorePattern: '^_'},
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
       ],
-      // Nest utilise les décorateurs expérimentaux, gts n'y touche pas mais on documente ici.
     },
   },
 ];
